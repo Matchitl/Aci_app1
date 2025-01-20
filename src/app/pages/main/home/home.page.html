@@ -1,0 +1,73 @@
+<app-header [showMenu]="true" title="Inicio"></app-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="!loading">
+    <ion-list lines="full" *ngIf="!loading">
+      <ion-item-sliding class="product-item" *ngFor="let inte of integrator">
+        <ion-item detail button> <!-- (click)="viewIntegrator(inte)" -->
+          <ion-card style="text-align: center;">
+            <ion-card-header>
+              <ion-avatar slot="start">
+                <img [src]="inte.img">
+              </ion-avatar>
+              <ion-card-title>{{ inte.nombre }}</ion-card-title>
+              <ion-card-subtitle>Carrera: {{ inte.categoria }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content style="display: flex; flex-direction: column; align-items: center;">
+              <img [src]="inte.img" alt="{{ inte.nombre }}" style="width: 100px; height: auto; margin-bottom: 10px;">
+              <div>
+                <p>{{ inte.descripcion }}</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option color="success" *ngIf="user()?.tipo=='admin'" (click)="addUpdateIntegrator(inte)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" *ngIf="user()?.tipo=='admin'" (click)="confirmDeleteEmployee(inte)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+
+      </ion-item-sliding>
+    </ion-list>
+
+    <ion-list *ngIf="loading">
+      <ion-item-sliding class="product-item" *ngFor="let dummy of [1,1,1,1,1,1,1]">
+        <ion-item>
+          <ion-card style="text-align: center;">
+            <ion-card-header>
+              <ion-avatar slot="start">
+                <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+              </ion-avatar>
+              <ion-card-title>
+                <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+              </ion-card-title>
+              <ion-card-subtitle>
+                <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+              </ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div class="empty" *ngIf="!loading && !integrator.length" style="text-align: center;">
+      <ion-icon name="business"></ion-icon>
+      <h3>No hay integradoras creadas</h3>
+    </div>
+  </ng-container>
+
+  <ion-fab *ngIf="user()?.tipo === 'admin'" vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="addUpdateIntegrator()" color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
